@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body{
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+}
+.navbar img{
+  width:70px;
+  padding-left: 50px;
+}
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-weight:600;
+  border-bottom: 1px solid rgb(196,21,21);
+}
+ul{
+  display: flex;
+  list-style: none;
+  transform: scale(0);
+  animation: zoom-in 1.5s ease forwards;
+}
+ul li{
+margin-right: 50px;
+}
+.btn1{
+  margin-right: 50px;
+  background-color:rgb(196,21,21);
+  border: 0;
+  color: white;
+  padding: 10px 25px;
+  cursor: pointer;
+  font-weight:600 ;
+  transition:0.3s ease;
+}
+.btn1:hover{
+  background-color: transparent;
+  border: 1px solid rgb(196,21,21);
+  color : rgb(196,21,21);
+}
+.hero{
+  display: flex;
+  align-items: center;
+}
+.left{
+  margin-left: 100px;
+  transform: translate(-500px);
+  animation:left-right 1.5s ease forwards ;
+}
+@keyframes left-right{
+  100%{
+    transform: translate(0px);
+  }
+}
+.title{
+  font-size: 90px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.left p{
+  font-size: 16px;
+  font-weight: 600;
+}
+.btns{
+  margin-top: 30px;
+}
+.btn2{
+  margin-right: 50px;
+  background-color:transparent;
+  border:1px solid rgb(196,21,21);
+  color:rgb(196,21,21);
+  padding: 10px 25px;
+  cursor: pointer;
+  font-weight:600 ;
+  transition:0.3s ease;
+}
+.btn2:hover{
+  background-color:rgb(196,21,21);
+  color :white;
+}
+.social{
+  margin-top: 20px;
+}
+.social-icons{
+  display:flex;
+  align-items: center;
+  margin-top: 5px;
+}
+.social-1{
+  font-size:19px;
+}
+.social-icons img{
+  width: 40px;
+}
+.right img{
+  width: 700px;
+  transform: scale(0);
+  animation: zoom-in 1.5s ease forwards;
+}
+@keyframes zoom-in{
+  100%{
+    transform: scale(1);
+  }
+}
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.login-container input {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+}
