@@ -1,36 +1,38 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
 
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     const trimmedMobile = mobile.trim();
     const trimmedPassword = password.trim();
 
-    const users =
-      JSON.parse(localStorage.getItem("users")) || [];
-
-    const userFound = users.find(
-      (user) =>
-        user.mobile === trimmedMobile &&
-        user.password === trimmedPassword
-    );
-
-    if (userFound) {
-      alert("Login Successful");
-
-      // Save logged in user
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(userFound)
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
+          mobile: trimmedMobile,
+          password: trimmedPassword
+        }
       );
 
-    } else {
-      alert("Invalid Credentials ");
+      alert("Login Successful");
+
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(response.data.user)
+      );
+
+      console.log(response.data);
+
+    } catch (error) {
+      console.error(error.response?.data);
+      alert(error.response?.data?.error || "Login Failed");
     }
 
     setMobile("");

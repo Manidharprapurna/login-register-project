@@ -13,6 +13,7 @@ const Navbar = () => {
         alt="logo" 
         onClick={() => navigate("/")} 
         style={{ cursor: "pointer" }}
+        
       />
 
       <ul>
@@ -37,6 +38,7 @@ const Navbar = () => {
         >
           REGISTER
         </button>
+        
       </div>
 
     </div>
