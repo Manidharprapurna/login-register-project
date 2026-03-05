@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  file: String
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

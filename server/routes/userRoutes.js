@@ -10,11 +10,11 @@ import {
 
 const router = express.Router();
 
-router.post("/register", registerUser);
+router.post("/register", upload.single("file"), registerUser);
 router.post("/login", loginUser);
 router.get("/users", getAllUsers);
 router.get("/users/:id", getUserById);
-router.put("/users/:id", updateUser);
+router.put("/users/:id", upload.single("file"), updateUser);
 router.delete("/users/:id", deleteUser);
 
 export default router;
