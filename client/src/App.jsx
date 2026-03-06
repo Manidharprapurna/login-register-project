@@ -8,6 +8,8 @@ import Dashboard from "./components/Dashboard"
 import Location from "./components/Location"
 import About from "./components/About"
 import Contact from "./components/Contact"
+import Menu from "./components/Menu"
+import Cart from "./components/Cart"
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
         <Route path="/location" element={<Location />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/menu" element={<Menu/>}/>
+        <Route path="/cart" element={<Cart/>}/>
       </Routes>
     </>
   )

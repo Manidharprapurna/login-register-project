@@ -24,8 +24,8 @@ const Navbar = () => {
       />
 
       <ul>
-        <li>MENU</li>
-        <li>CART</li>
+        <li onClick={() => navigate("/menu")}>MENU</li>
+        <li onClick={() => navigate("/cart")}>CART</li>
         <li onClick={() => navigate("/location")}>LOCATION</li>
         <li onClick={() => navigate("/about")}>ABOUT</li>
         <li onClick={() => navigate("/contact")}>CONTACT</li>
