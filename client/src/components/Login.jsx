@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const Login = () => {
 
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -27,6 +28,7 @@ const Login = () => {
         "loggedInUser",
         JSON.stringify(response.data.user)
       );
+       navigate("/dashboard");
 
       console.log(response.data);
 

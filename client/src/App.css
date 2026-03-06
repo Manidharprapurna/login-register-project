@@ -15,6 +15,7 @@ body{
   width: 100%;
   font-weight:600;
   border-bottom: 1px solid rgb(196,21,21);
+
 }
 ul{
   display: flex;
@@ -124,9 +125,12 @@ margin-right: 50px;
 }
 
 .error-text{
-  color: #d93025;
+  color: red;
   font-size: 12px;
   margin-top: -10px;
   margin-bottom: 10px;
   font-weight: 500;
+}
+.navbar ul li {
+  cursor: pointer;
 }
