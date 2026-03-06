@@ -23,13 +23,11 @@ const Login = () => {
       );
 
       alert("Login Successful");
-
       localStorage.setItem(
         "loggedInUser",
         JSON.stringify(response.data.user)
       );
        navigate("/dashboard");
-
       console.log(response.data);
 
     } catch (error) {
@@ -44,7 +42,6 @@ const Login = () => {
   return (
     <div className="login-container">
       <h2>Login</h2>
-
       <form onSubmit={handleLogin}>
         <input
           type="tel"
@@ -53,7 +50,6 @@ const Login = () => {
           onChange={(e) => setMobile(e.target.value)}
           required
         />
-
         <input
           type="password"
           placeholder="Enter Password"
@@ -61,7 +57,6 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <button type="submit" className="btn1">
           Login
         </button>
