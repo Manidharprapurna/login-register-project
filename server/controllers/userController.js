@@ -4,13 +4,17 @@ import fs from "fs";
 
 //REGISTER
 export const registerUser = async (req, res) => {
-console.log('user registration', req.body)
- 
+
+  console.log("REQ.BODY:", req.body);
+  console.log("REQ.FILE:", req.file);
+
   try {
+
     const mobile = String(req.body.mobile).trim();
     const password = String(req.body.password).trim();
 
     if (!mobile || !password) {
+
       if (req.file) {
         const filePath = `uploads/${req.file.filename}`;
         if (fs.existsSync(filePath)) {
@@ -18,8 +22,24 @@ console.log('user registration', req.body)
         }
       }
 
-      return res.status(400).json({ 
-        error: "Mobile and password are required" 
+      return res.status(400).json({
+        error: "Mobile and password are required"
+      });
+    }
+
+    const existingUser = await User.findOne({ mobile });
+
+    if (existingUser) {
+
+      if (req.file) {
+        const filePath = `uploads/${req.file.filename}`;
+        if (fs.existsSync(filePath)) {
+          await fs.promises.unlink(filePath);
+        }
+      }
+
+      return res.status(400).json({
+        error: "Mobile number already exists"
       });
     }
 
@@ -31,7 +51,7 @@ console.log('user registration', req.body)
       file: req.file ? req.file.filename : null
     });
 
-    const { password: _ , ...userWithoutPassword } = newUser._doc;
+    const { password: _, ...userWithoutPassword } = newUser._doc;
 
     res.status(201).json({
       status: "Registration successful",
@@ -48,14 +68,13 @@ console.log('user registration', req.body)
     }
 
     if (err.code === 11000) {
-      console.log({err})
-      return res.status(400).json({ 
-        error: "Mobile number already exists" 
+      return res.status(400).json({
+        error: "Mobile number already exists"
       });
     }
 
-    res.status(500).json({ 
-      error: err.message 
+    res.status(500).json({
+      error: err.message
     });
   }
 };
@@ -68,7 +87,7 @@ export const loginUser = async (req, res) => {
 
     if (!mobile || !password) {
       return res.status(400).json({ 
-      error: "Mobile number already exists" });
+      error: "Mobile and password are required" });
     }
 
     console.log("Login attempt mobile:", mobile);

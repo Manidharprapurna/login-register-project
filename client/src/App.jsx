@@ -1,21 +1,22 @@
 import { Routes, Route } from "react-router-dom"
 import "./App.css"
 import Navbar from "./components/Navbar"
-import Hero from "./components/Body"
 import Login from "./components/Login"
 import Register from "./components/Register"
-import Dashboard from "./components/Dashboard"
-import Location from "./components/Location"
-import About from "./components/About"
-import Contact from "./components/Contact"
-import Menu from "./components/Menu"
-import Cart from "./components/Cart"
+
+import Hero from "./pages/Body"
+import Dashboard from "./pages/Dashboard"
+import Location from "./pages/Location"
+import About from "./pages/About"
+import Contact from "./pages/Contact"
+import Menu from "./pages/Menu"
+import Cart from "./pages/Cart"
 
 const App = () => {
   return (
     <>
       <Navbar />
-  
+
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/login" element={<Login />} />
@@ -24,8 +25,8 @@ const App = () => {
         <Route path="/location" element={<Location />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/menu" element={<Menu/>}/>
-        <Route path="/cart" element={<Cart/>}/>
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </>
   )

@@ -9,29 +9,32 @@ const Login = () => {
   const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log("Login button clicked");
 
     const trimmedMobile = mobile.trim();
     const trimmedPassword = password.trim();
 
     try {
+      console.log("Sending login request to backend")
       const response = await axios.post(
         "http://localhost:3000/login",
+  
         {
           mobile: trimmedMobile,
           password: trimmedPassword
         }
       );
-
+      console.log("login successful")
       alert("Login Successful");
       localStorage.setItem(
         "loggedInUser",
         JSON.stringify(response.data.user)
       );
        navigate("/dashboard");
-      console.log(response.data);
+      console.log({response});
 
     } catch (error) {
-      console.error(error.response?.data);
+      console.log("login failed")
       alert(error.response?.data?.error || "Login Failed");
     }
 

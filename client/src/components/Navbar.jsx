@@ -6,9 +6,13 @@ const Navbar = () => {
 
   const navigate = useNavigate(); 
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  console.log("Logged in user:", user)
+
   const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
-    navigate("/login");
+  localStorage.removeItem("loggedInUser");
+  console.log("User removed from localStorage");
+  
+  navigate("/login");
   };
     return (
     <div className="navbar">
@@ -19,6 +23,7 @@ const Navbar = () => {
         style={{ cursor: "pointer" }}
       />
       <ul>
+        <li onClick={() => navigate("/dashboard")}>DASHBOARD</li>
         <li onClick={() => navigate("/menu")}>MENU</li>
         <li onClick={() => navigate("/cart")}>CART</li>
         <li onClick={() => navigate("/location")}>LOCATION</li>
