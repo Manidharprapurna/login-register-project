@@ -1,9 +1,11 @@
 import express from "express";
-import multer from "multer";
+import { uploadUser } from "../middleware/upload.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
+
 import {
   registerUser,
   loginUser,
-  getAllUsers,
   getUserById,
   updateUser,
   deleteUser
@@ -11,24 +13,30 @@ import {
 
 const router = express.Router();
 
-//Multer
+router.post("/register", uploadUser.single("file"), registerUser);
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
-
-const upload = multer({ storage: storage });
-
-router.post("/register", upload.single("file"), registerUser);
 router.post("/login", loginUser);
-router.get("/users", getAllUsers);
-router.get("/users/:id", getUserById);
-router.put("/users/:id", upload.single("file"), updateUser);
-router.delete("/users/:id", deleteUser);
+
+router.get(
+  "/users/:id",
+  authMiddleware,
+  roleMiddleware("user"),
+  getUserById
+);
+
+router.put(
+  "/users/:id",
+  authMiddleware,
+  roleMiddleware("user"),
+  uploadUser.single("file"),
+  updateUser
+);
+
+router.delete(
+  "/users/:id",
+  authMiddleware,
+  roleMiddleware("user"),
+  deleteUser
+);
 
 export default router;

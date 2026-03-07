@@ -1,12 +1,16 @@
 import User from "../models/User.js";
+import Product from "../models/Product.js";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
 import fs from "fs";
 
-//REGISTER
+const SECRET = "MY_SECRET_KEY";
+
+
+// REGISTER
 export const registerUser = async (req, res) => {
 
-  console.log("REQ.BODY:", req.body);
-  console.log("REQ.FILE:", req.file);
+console.log("user registration", req.body);
 
   try {
 
@@ -27,27 +31,12 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ mobile });
-
-    if (existingUser) {
-
-      if (req.file) {
-        const filePath = `uploads/${req.file.filename}`;
-        if (fs.existsSync(filePath)) {
-          await fs.promises.unlink(filePath);
-        }
-      }
-
-      return res.status(400).json({
-        error: "Mobile number already exists"
-      });
-    }
-
     const hashedPassword = await argon2.hash(password);
 
     const newUser = await User.create({
-      mobile: mobile,
+      mobile,
       password: hashedPassword,
+      role: "user",
       file: req.file ? req.file.filename : null
     });
 
@@ -79,89 +68,113 @@ export const registerUser = async (req, res) => {
   }
 };
 
-//LOGIN
+
+
+// LOGIN
 export const loginUser = async (req, res) => {
+
   try {
+
     const mobile = String(req.body.mobile).trim();
     const password = String(req.body.password).trim();
 
     if (!mobile || !password) {
-      return res.status(400).json({ 
-      error: "Mobile and password are required" });
+      return res.status(400).json({
+        error: "Mobile and password required"
+      });
     }
 
-    console.log("Login attempt mobile:", mobile);
-
-    const user = await User.findOne({ mobile: mobile });
-
-    console.log("User found:", user);
+    const user = await User.findOne({ mobile });
 
     if (!user) {
-      return res.status(404).json({ 
-        error: "User not found" 
+      return res.status(404).json({
+        error: "User not found"
+      });
+    }
+
+    if (user.role !== "user") {
+      return res.status(403).json({
+        error: "Not authorized as user"
       });
     }
 
     const match = await argon2.verify(user.password, password);
 
     if (!match) {
-      return res.status(401).json({ 
-        error: "Invalid password" 
+      return res.status(401).json({
+        error: "Invalid password"
       });
     }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      SECRET,
+      { expiresIn: "1d" }
+    );
 
     const { password: _, ...userWithoutPassword } = user._doc;
 
     res.json({
       status: "Login successful",
+      token,
       user: userWithoutPassword
     });
-  } 
 
-  catch (err) {
-    res.status(500).json({ 
-      error: err.message 
-    });
-  }
-};
-
-//GET ALL USERS
-export const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
   } catch (err) {
-    res.status(500).json({ 
-      error: err.message 
+
+    res.status(500).json({
+      error: err.message
     });
+
   }
+
 };
 
-//GET USER BY ID
+
+
+// GET USER BY ID (ONLY THEIR OWN ACCOUNT)
 export const getUserById = async (req, res) => {
+
   try {
+
+    if (req.user.id !== req.params.id) {
+      return res.status(403).json({
+        error: "Access denied"
+      });
+    }
+
     const user = await User.findById(req.params.id).select("-password");
 
     if (!user) {
-      return res.status(404).json({ 
-        error: "User not found" 
+      return res.status(404).json({
+        error: "User not found"
       });
     }
 
     res.json(user);
 
-  } 
-  catch (err) {
-    res.status(500).json({ 
-      error: err.message 
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
     });
+
   }
+
 };
 
-//UPDATE USER
+
+
+// UPDATE USER (ONLY OWN ACCOUNT)
 export const updateUser = async (req, res) => {
 
   try {
+
+    if (req.user.id !== req.params.id) {
+      return res.status(403).json({
+        error: "Access denied"
+      });
+    }
 
     const user = await User.findById(req.params.id);
 
@@ -174,8 +187,8 @@ export const updateUser = async (req, res) => {
         }
       }
 
-      return res.status(404).json({ 
-      error: "User not found" 
+      return res.status(404).json({
+        error: "User not found"
       });
     }
 
@@ -183,11 +196,12 @@ export const updateUser = async (req, res) => {
 
       if (user.file) {
 
-        const oldFile = `uploads/${user.file}`;
+        const oldFile = `uploads/users/${user.file}`;
 
         if (fs.existsSync(oldFile)) {
           await fs.promises.unlink(oldFile);
         }
+
       }
 
       user.file = req.file.filename;
@@ -207,8 +221,7 @@ export const updateUser = async (req, res) => {
 
     res.json(userWithoutPassword);
 
-  } 
-  catch (err) {
+  } catch (err) {
 
     if (req.file) {
       const filePath = `uploads/${req.file.filename}`;
@@ -218,46 +231,83 @@ export const updateUser = async (req, res) => {
     }
 
     if (err.code === 11000) {
-      console.log({err})
-      return res.status(400).json({ 
-        error: "Mobile number already exists" 
+      return res.status(400).json({
+        error: "Mobile number already exists"
       });
     }
 
     res.status(500).json({
-    error: err.message 
-  });
+      error: err.message
+    });
+
   }
+
 };
 
-//DELETE USER
+
+
+// DELETE USER (ONLY OWN ACCOUNT)
 export const deleteUser = async (req, res) => {
 
   try {
 
+    if (req.user.id !== req.params.id) {
+      return res.status(403).json({
+        error: "Access denied"
+      });
+    }
+
     const user = await User.findById(req.params.id);
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({
+        error: "User not found"
+      });
     }
 
     if (user.file) {
 
-      const filePath = `uploads/${user.file}`;
+      const filePath = `uploads/users/${user.file}`;
 
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
+
     }
 
     await User.findByIdAndDelete(req.params.id);
 
-    res.json({ status: "User deleted successfully" });
+    res.json({
+      status: "User deleted successfully"
+    });
 
-  } 
-  catch (err) {
+  } catch (err) {
 
-  res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message
+    });
 
   }
+
+};
+
+
+
+// GET ALL PRODUCTS (FOR USERS)
+export const getAllProducts = async (req, res) => {
+
+  try {
+
+    const products = await Product.find();
+
+    res.json(products);
+
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
 };
