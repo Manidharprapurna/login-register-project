@@ -41,22 +41,18 @@ router.delete(
 );
 
 
-// USER PRODUCT ROUTES
+// MENU ROUTES (ADMIN + USER)
 
 router.get(
   "/products",
-  authMiddleware,
-  roleMiddleware("user"),
   getAllProducts
 );
 
 router.get(
   "/products/:id",
-  authMiddleware,
-  roleMiddleware("user"),
   getProductById
 );
-
+// USER BUY ROUTE
 router.post(
   "/products/:id/buy",
   authMiddleware,

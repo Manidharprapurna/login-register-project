@@ -10,7 +10,7 @@ const createAdmin = async () => {
   const hashedPassword = await argon2.hash("123456");
 
   const admin = new User({
-    mobile: "7702860363",
+    mobile: "1234567891",
     password: hashedPassword,
     role: "admin"
   });

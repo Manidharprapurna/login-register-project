@@ -1,62 +1,147 @@
-import React from "react";
-import F1 from "../images/F1.jpg";
-import F2 from "../images/F2.png";
-import F3 from "../images/F3.jpg";
-import F4 from "../images/F4.png";
-
-//Burger
-import B1 from "../images/B1.jpg";
-import B2 from "../images/B2.jpg";
-import B3 from "../images/B3.webp";
-import B4 from "../images/B4.jpg";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Menu = () => {
 
-  const friesItems = [
-    { name: "Regular French Fries", price: "₹99", image: F1 },
-    { name: "Large French Fries", price: "₹129", image: F2 },
-    { name: "Cheese Fries", price: "₹149", image: F3 },
-    { name: "Peri Peri Fries", price: "₹159", image: F4 }
-  ];
+  const [items, setItems] = useState([]);
+  const navigate = useNavigate();
 
-  const burgerItems = [
-    { name: "Zinger Burger", price: "₹199", image: B1 },
-    { name: "Chicken Burger", price: "₹179", image: B2 },
-    { name: "Cheese Burger", price: "₹189", image: B3 },
-    { name: "Double Chicken Burger", price: "₹229", image: B4 }
-  ];
+  const admin = JSON.parse(localStorage.getItem("admin"));
+
+  // FETCH MENU ITEMS
+  useEffect(() => {
+
+    const fetchMenu = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+        ("http://localhost:3000/api/products/products"),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        setItems(res.data);
+
+      } catch (error) {
+
+        console.log("Error fetching menu:", error);
+
+      }
+
+    };
+
+    fetchMenu();
+
+  }, []);
+
+  // DELETE ITEM (ADMIN)
+  const handleDelete = async (id) => {
+
+    try {
+
+      const token = localStorage.getItem("token");
+
+      await axios.delete(
+        `http://localhost:3000/admin/products/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      alert("Item deleted successfully");
+
+      // Remove item from UI
+      setItems(items.filter(item => item._id !== id));
+
+    } catch (error) {
+
+      console.log("Delete error:", error);
+
+    }
+
+  };
 
   return (
+
     <div className="menu-container">
+
       <h1>Menu</h1>
 
-      {/* Fries Section */}
-      <h2>French Fries</h2>
+      {/* ADMIN ADD BUTTON */}
+      {admin && (
+        <button
+          onClick={() => navigate("/add-product")}
+          style={{ marginBottom: "20px" }}
+        >
+          Add Item
+        </button>
+      )}
+
       <div className="menu-grid">
-        {friesItems.map((item, index) => (
-          <div className="menu-card" key={index}>
-           <img src={item.image} alt={item.name} />
-            <h3>{item.name}</h3>
-            <p>{item.price}</p>
-            <button>Add to Cart</button>
+
+        {items.length === 0 && (
+          <p>No food items available</p>
+        )}
+
+        {items.map((item) => (
+
+          <div className="menu-card" key={item._id}>
+
+            <img
+              src={`http://localhost:3000/uploads/products/${item.image}`}
+              alt={item.title}
+            />
+
+            <h3>{item.title}</h3>
+
+            <p>₹{item.price}</p>
+
+            {/* USER BUTTON */}
+            {!admin && (
+              <button>Add to Cart</button>
+            )}
+
+            {/* ADMIN CONTROLS */}
+            {admin && (
+              <div style={{ marginTop: "10px" }}>
+
+                <button
+                  onClick={() =>
+                    navigate(`/edit-product/${item._id}`)
+                  }
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => handleDelete(item._id)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Delete
+                </button>
+
+              </div>
+            )}
+
           </div>
+
         ))}
+
       </div>
 
-      {/* Burger Section */}
-      <h2>Burgers</h2>
-      <div className="menu-grid">
-        {burgerItems.map((item, index) => (
-          <div className="menu-card" key={index}>
-            <img src={item.image} alt={item.name} />
-            <h3>{item.name}</h3>
-            <p>{item.price}</p>
-            <button>Add to Cart</button>
-          </div>
-        ))}
-      </div>
     </div>
+
   );
+
 };
 
 export default Menu;

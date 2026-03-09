@@ -13,17 +13,18 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// static folders
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
 connectDB();
 
-app.use("/", userRoutes);
-app.use("/", adminRoutes);
-app.use("/", productRoutes);
+// ROUTES
+app.use("/api/users", userRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/products", productRoutes);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
-  console.log("connected to DB")
-
+  console.log("Connected to DB");
 });

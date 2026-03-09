@@ -11,24 +11,28 @@ import {
 
 const router = express.Router();
 
-router.post("/admin/login", adminLogin);
+// ADMIN LOGIN
+router.post("/login", adminLogin);
 
+// GET ALL USERS
 router.get(
-  "/admin/users",
+  "/users",
   authMiddleware,
   roleMiddleware("admin"),
   getAllUsersAdmin
 );
 
+// UPDATE USER
 router.put(
-  "/admin/users/:id",
+  "/users/:id",
   authMiddleware,
   roleMiddleware("admin"),
   updateUserAdmin
 );
 
+// DELETE USER
 router.delete(
-  "/admin/users/:id",
+  "/users/:id",
   authMiddleware,
   roleMiddleware("admin"),
   deleteUserAdmin

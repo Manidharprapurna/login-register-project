@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const AdminLogin = () => {
 
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleAdminLogin = async (e) => {
+
     e.preventDefault();
 
     const trimmedMobile = mobile.trim();
@@ -17,38 +18,38 @@ const Login = () => {
 
     try {
 
-      console.log("Sending login request");
+      console.log("Sending admin login request");
 
       const response = await axios.post(
-        "http://localhost:3000/api/users/login",
+        "http://localhost:3000/api/admin/login",
         {
           mobile: trimmedMobile,
           password: trimmedPassword
         }
       );
 
-      console.log("Login successful:", response.data);
+      console.log("Admin login successful", response.data);
 
-      alert("Login Successful");
+      alert("Admin Login Successful");
 
-      // Save JWT token
+      // Save token
       localStorage.setItem("token", response.data.token);
 
-      // Save user data
+      // Save admin details
       localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify(response.data.user)
+        "admin",
+        JSON.stringify(response.data.admin)
       );
 
-      // Navigate to dashboard
-      navigate("/dashboard");
+      // Redirect to admin dashboard
+      navigate("/admin/dashboard");
 
     } catch (error) {
 
-      console.log("Login failed:", error);
+      console.log("Admin login failed:", error);
 
       alert(
-        error.response?.data?.error || "Login Failed"
+        error.response?.data?.error || "Admin Login Failed"
       );
 
     }
@@ -62,9 +63,9 @@ const Login = () => {
 
     <div className="login-container">
 
-      <h2>Login</h2>
+      <h2>Admin Login</h2>
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleAdminLogin}>
 
         <input
           type="tel"
@@ -83,7 +84,7 @@ const Login = () => {
         />
 
         <button type="submit" className="btn1">
-          Login
+          Admin Login
         </button>
 
       </form>
@@ -94,4 +95,4 @@ const Login = () => {
 
 };
 
-export default Login;
+export default AdminLogin;

@@ -109,7 +109,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1D" }
     );
 
     const { password: _, ...userWithoutPassword } = user._doc;
@@ -129,8 +129,6 @@ export const loginUser = async (req, res) => {
   }
 
 };
-
-
 
 // GET USER BY ID (ONLY THEIR OWN ACCOUNT)
 export const getUserById = async (req, res) => {
