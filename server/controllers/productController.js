@@ -117,7 +117,7 @@ export const updateProduct = async (req, res) => {
 
       if (product.image) {
 
-        const oldFile = `uploads/${product.image}`;
+        const oldFile = `uploads/products/${product.image}`;
 
         if (fs.existsSync(oldFile)) {
           await fs.promises.unlink(oldFile);

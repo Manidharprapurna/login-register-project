@@ -49,7 +49,7 @@ const Menu = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://localhost:3000/admin/products/${id}`,
+        `http://localhost:3000/api/products/admin/products/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

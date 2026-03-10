@@ -20,7 +20,7 @@ console.log("user registration", req.body);
     if (!mobile || !password) {
 
       if (req.file) {
-        const filePath = `uploads/${req.file.filename}`;
+        const filePath = `uploads/users/${req.file.filename}`;
         if (fs.existsSync(filePath)) {
           await fs.promises.unlink(filePath);
         }
@@ -50,7 +50,7 @@ console.log("user registration", req.body);
   } catch (err) {
 
     if (req.file) {
-      const filePath = `uploads/${req.file.filename}`;
+      const filePath = `uploads/users/${req.file.filename}`;
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
@@ -109,7 +109,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       SECRET,
-      { expiresIn: "1D" }
+      { expiresIn: "1d" }
     );
 
     const { password: _, ...userWithoutPassword } = user._doc;
@@ -179,7 +179,7 @@ export const updateUser = async (req, res) => {
     if (!user) {
 
       if (req.file) {
-        const filePath = `uploads/${req.file.filename}`;
+        const filePath = `uploads/users/${req.file.filename}`;
         if (fs.existsSync(filePath)) {
           await fs.promises.unlink(filePath);
         }
@@ -222,7 +222,7 @@ export const updateUser = async (req, res) => {
   } catch (err) {
 
     if (req.file) {
-      const filePath = `uploads/${req.file.filename}`;
+      const filePath = `uploads/users/${req.file.filename}`;
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
