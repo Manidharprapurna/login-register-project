@@ -9,7 +9,6 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
-  buyProduct
 } from "../controllers/productController.js";
 
 const router = express.Router();
@@ -51,13 +50,6 @@ router.get(
 router.get(
   "/products/:id",
   getProductById
-);
-// USER BUY ROUTE
-router.post(
-  "/products/:id/buy",
-  authMiddleware,
-  roleMiddleware("user"),
-  buyProduct
 );
 
 export default router;

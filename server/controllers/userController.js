@@ -1,5 +1,4 @@
 import User from "../models/User.js";
-import Product from "../models/Product.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import fs from "fs";
@@ -278,27 +277,6 @@ export const deleteUser = async (req, res) => {
     res.json({
       status: "User deleted successfully"
     });
-
-  } catch (err) {
-
-    res.status(500).json({
-      error: err.message
-    });
-
-  }
-
-};
-
-
-
-// GET ALL PRODUCTS (FOR USERS)
-export const getAllProducts = async (req, res) => {
-
-  try {
-
-    const products = await Product.find();
-
-    res.json(products);
 
   } catch (err) {
 

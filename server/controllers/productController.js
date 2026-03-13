@@ -27,7 +27,7 @@ export const createProduct = async (req, res) => {
 
       title,
       description,
-      price,
+      price: Number(price),
       image: req.file ? req.file.filename : null,
       createdBy: req.user.id
 
@@ -129,9 +129,9 @@ export const updateProduct = async (req, res) => {
 
     }
 
-    if (req.body.title) product.title = req.body.title;
+    if (req.body.title) product.title = req.body.title.trim();
     if (req.body.description) product.description = req.body.description;
-    if (req.body.price) product.price = req.body.price;
+    if (req.body.price) product.price = Number(req.body.price);
 
     await product.save();
 
@@ -179,33 +179,6 @@ export const deleteProduct = async (req, res) => {
 
     res.json({
       status: "Product deleted"
-    });
-
-  } catch (err) {
-
-    res.status(500).json({ error: err.message });
-
-  }
-
-};
-
-// BUY PRODUCT (USER)
-export const buyProduct = async (req, res) => {
-
-  try {
-
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({
-        error: "Product not found"
-      });
-    }
-
-    res.json({
-      status: "Product purchased successfully",
-      product,
-      buyer: req.user.id
     });
 
   } catch (err) {
